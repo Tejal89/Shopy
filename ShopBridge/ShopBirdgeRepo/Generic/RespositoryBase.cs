@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ShopBridgeRepo
 {
@@ -24,17 +25,17 @@ namespace ShopBridgeRepo
             return this.RepositoryContext.Set<T>()
                 .Where(expression).AsNoTracking();
         }
-        public void Create(T entity)
+        public bool Create(T entity)
         {
-            this.RepositoryContext.Set<T>().Add(entity);
+            return this.RepositoryContext.Set<T>().Add(entity).ReloadAsync().IsCompletedSuccessfully;
         }
-        public void Update(T entity)
+        public bool Update(T entity)
         {
-            this.RepositoryContext.Set<T>().Update(entity);
+            return this.RepositoryContext.Set<T>().Update(entity).ReloadAsync().IsCompletedSuccessfully;
         }
-        public void Delete(T entity)
+        public bool Delete(T entity)
         {
-            this.RepositoryContext.Set<T>().Remove(entity);
+            return this.RepositoryContext.Set<T>().Remove(entity).ReloadAsync().IsCompletedSuccessfully;
         }
     }
 

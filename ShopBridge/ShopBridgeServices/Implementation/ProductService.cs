@@ -14,30 +14,35 @@ namespace ShopBridgeRepo.Implementation
     public class ProductService : IProductService
     {
         private readonly IProductRepository _IProductRepository;
+        
         public ProductService(IProductRepository IProductRepository)
         {
             _IProductRepository = IProductRepository;
         }
+
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await _IProductRepository.GetAllProductsAsync();
         }
+
         public async Task<Product> GetProductByIdAsync(long ProductId)
         {
             return await _IProductRepository.GetProductByIdAsync(ProductId);
         }
-        
-        public void CreateProduct(Product Product)
+
+        public async Task<bool> CreateProduct(Product Product)
         {
-            _IProductRepository.CreateProduct(Product);
+            return await _IProductRepository.CreateProduct(Product);
         }
-        public void UpdateProduct(Product Product)
+
+        public async Task<bool> UpdateProduct(Product Product)
         {
-            _IProductRepository.UpdateProduct(Product);
+            return await _IProductRepository.UpdateProduct(Product);
         }
-        public void DeleteProduct(Product Product)
+
+        public async Task<bool> DeleteProduct(Product Product)
         {
-            _IProductRepository.DeleteProduct(Product);
+            return await _IProductRepository.DeleteProduct(Product);
         }
     }
 }

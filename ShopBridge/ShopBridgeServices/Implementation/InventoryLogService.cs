@@ -14,30 +14,33 @@ namespace ShopBridgeRepo.Implementation
     public class InventoryLogService : IInventoryLogService
     {
         private readonly IInventoryLogRepository _IInventoryLogRepository;
+        
         public InventoryLogService(IInventoryLogRepository IInventoryLogRepository)
         {
             _IInventoryLogRepository = IInventoryLogRepository;
         }
+        
         public async Task<IEnumerable<InventoryLog>> GetAllInventoryLogsAsync()
         {
             return await _IInventoryLogRepository.GetAllInventoryLogsAsync();
         }
+        
         public async Task<InventoryLog> GetInventoryLogByIdAsync(long InventoryLogId)
         {
             return await _IInventoryLogRepository.GetInventoryLogByIdAsync(InventoryLogId);
         }
         
-        public void CreateInventoryLog(InventoryLog InventoryLog)
+        public async Task<bool> CreateInventoryLog(InventoryLog InventoryLog)
         {
-            _IInventoryLogRepository.CreateInventoryLog(InventoryLog);
+            return await _IInventoryLogRepository.CreateInventoryLog(InventoryLog);
         }
-        public void UpdateInventoryLog(InventoryLog InventoryLog)
+        public async Task<bool> UpdateInventoryLog(InventoryLog InventoryLog)
         {
-            _IInventoryLogRepository.UpdateInventoryLog(InventoryLog);
+            return await _IInventoryLogRepository.UpdateInventoryLog(InventoryLog);
         }
-        public void DeleteInventoryLog(InventoryLog InventoryLog)
+        public async Task<bool> DeleteInventoryLog(InventoryLog InventoryLog)
         {
-            _IInventoryLogRepository.DeleteInventoryLog(InventoryLog);
+            return await _IInventoryLogRepository.DeleteInventoryLog(InventoryLog);
         }
     }
 }

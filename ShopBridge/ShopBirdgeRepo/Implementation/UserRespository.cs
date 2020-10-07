@@ -16,29 +16,31 @@ namespace ShopBridgeRepo.Implementation
             : base(repositoryContext)
         {
         }
+
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await FindAll()
                .OrderByDescending(x=> x.UserId)
                .ToListAsync();
         }
+
         public async Task<User> GetUserByIdAsync(long UserId)
         {
             return await FindByCondition(x => x.UserId.Equals(UserId))
                 .FirstOrDefaultAsync();
         }
         
-        public void CreateUser(User User)
+        public async Task<bool> CreateUser(User User)
         {
-            Create(User);
+            return Create(User);
         }
-        public void UpdateUser(User User)
+        public async Task<bool> UpdateUser(User User)
         {
-            Update(User);
+            return Update(User);
         }
-        public void DeleteUser(User User)
+        public async Task<bool> DeleteUser(User User)
         {
-            Delete(User);
+            return Delete(User);
         }
     }
 }

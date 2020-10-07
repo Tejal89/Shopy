@@ -14,30 +14,35 @@ namespace ShopBridgeRepo.Implementation
     public class UserService : IUserService
     {
         private readonly IUserRepository _IUserRepository;
+        
         public UserService(IUserRepository IUserRepository)
         {
             _IUserRepository = IUserRepository;
         }
+
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _IUserRepository.GetAllUsersAsync();
         }
+
         public async Task<User> GetUserByIdAsync(long UserId)
         {
             return await _IUserRepository.GetUserByIdAsync(UserId);
         }
         
-        public void CreateUser(User User)
+        public async Task<bool> CreateUser(User User)
         {
-            _IUserRepository.CreateUser(User);
+            return await _IUserRepository.CreateUser(User);
         }
-        public void UpdateUser(User User)
+
+        public async Task<bool> UpdateUser(User User)
         {
-            _IUserRepository.UpdateUser(User);
+            return await _IUserRepository.UpdateUser(User);
         }
-        public void DeleteUser(User User)
+
+        public async Task<bool> DeleteUser(User User)
         {
-            _IUserRepository.DeleteUser(User);
+            return await _IUserRepository.DeleteUser(User);
         }
     }
 }

@@ -5,6 +5,11 @@ namespace ShopBridgeData.Entity
 {
     public partial class Product
     {
+        public Product()
+        {
+            Inventory = new HashSet<Inventory>();
+        }
+
         public long ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
@@ -17,5 +22,7 @@ namespace ShopBridgeData.Entity
         public bool IsDeleted { get; set; }
         public long? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
+
+        public virtual ICollection<Inventory> Inventory { get; set; }
     }
 }

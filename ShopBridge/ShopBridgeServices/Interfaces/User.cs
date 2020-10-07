@@ -10,8 +10,8 @@ namespace ShopBridgeServices.Interfaces
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(long UserId);
-        void CreateUser(User User);
-        void UpdateUser(User User);
-        void DeleteUser(User User);
+        Task<bool> CreateUser(User User);
+        Task<bool> UpdateUser(User User);
+        Task<bool> DeleteUser(User User);
     }
 }

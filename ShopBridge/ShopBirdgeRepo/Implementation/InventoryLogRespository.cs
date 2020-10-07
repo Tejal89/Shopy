@@ -16,6 +16,7 @@ namespace ShopBridgeRepo.Implementation
             : base(repositoryContext)
         {
         }
+
         public async Task<IEnumerable<InventoryLog>> GetAllInventoryLogsAsync()
         {
             return await FindAll()
@@ -28,17 +29,19 @@ namespace ShopBridgeRepo.Implementation
                 .FirstOrDefaultAsync();
         }
         
-        public void CreateInventoryLog(InventoryLog InventoryLog)
+        public async Task<bool> CreateInventoryLog(InventoryLog InventoryLog)
         {
-            Create(InventoryLog);
+            return Create(InventoryLog);
         }
-        public void UpdateInventoryLog(InventoryLog InventoryLog)
+
+        public async Task<bool> UpdateInventoryLog(InventoryLog InventoryLog)
         {
-            Update(InventoryLog);
+            return Update(InventoryLog);
         }
-        public void DeleteInventoryLog(InventoryLog InventoryLog)
+
+        public async Task<bool> DeleteInventoryLog(InventoryLog InventoryLog)
         {
-            Delete(InventoryLog);
+            return Delete(InventoryLog);
         }
     }
 }

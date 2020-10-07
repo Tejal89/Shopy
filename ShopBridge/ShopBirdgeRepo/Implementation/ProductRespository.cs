@@ -16,29 +16,33 @@ namespace ShopBridgeRepo.Implementation
             : base(repositoryContext)
         {
         }
+
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await FindAll()
+            return await FindByCondition(x => x.IsDeleted == false)
                .OrderByDescending(x=> x.ProductId)
                .ToListAsync();
         }
+
         public async Task<Product> GetProductByIdAsync(long ProductId)
         {
-            return await FindByCondition(x => x.ProductId.Equals(ProductId))
+            return await FindByCondition(x => x.ProductId.Equals(ProductId) &&  x.IsDeleted == false)
                 .FirstOrDefaultAsync();
         }
         
-        public void CreateProduct(Product Product)
+        public async Task<bool> CreateProduct(Product Product)
         {
-            Create(Product);
+            return Create(Product);
         }
-        public void UpdateProduct(Product Product)
+
+        public async Task<bool> UpdateProduct(Product Product)
         {
-            Update(Product);
+            return Update(Product);
         }
-        public void DeleteProduct(Product Product)
+
+        public async Task<bool> DeleteProduct(Product Product)
         {
-            Delete(Product);
+            return Delete(Product);
         }
     }
 }

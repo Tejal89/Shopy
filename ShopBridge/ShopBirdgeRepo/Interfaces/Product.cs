@@ -10,8 +10,8 @@ namespace ShopBridgeRepo.Interfaces
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product> GetProductByIdAsync(long ProductId);
-        void CreateProduct(Product Product);
-        void UpdateProduct(Product Product);
-        void DeleteProduct(Product Product);
+        Task<bool> CreateProduct(Product Product);
+        Task<bool> UpdateProduct(Product Product);
+        Task<bool> DeleteProduct(Product Product);
     }
 }

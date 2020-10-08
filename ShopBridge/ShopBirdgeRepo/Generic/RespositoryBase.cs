@@ -25,17 +25,17 @@ namespace ShopBridgeRepo
             return this.RepositoryContext.Set<T>()
                 .Where(expression).AsNoTracking();
         }
-        public bool Create(T entity)
+        public T Create(T entity)
         {
-            return this.RepositoryContext.Set<T>().Add(entity).ReloadAsync().IsCompletedSuccessfully;
+            return this.RepositoryContext.Set<T>().Add(entity).Entity;
         }
-        public bool Update(T entity)
+        public T Update(T entity)
         {
-            return this.RepositoryContext.Set<T>().Update(entity).ReloadAsync().IsCompletedSuccessfully;
+            return this.RepositoryContext.Set<T>().Update(entity).Entity;
         }
-        public bool Delete(T entity)
+        public void Delete(T entity)
         {
-            return this.RepositoryContext.Set<T>().Remove(entity).ReloadAsync().IsCompletedSuccessfully;
+            this.RepositoryContext.Set<T>().Remove(entity);
         }
     }
 

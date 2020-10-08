@@ -20,12 +20,15 @@ namespace ShopBridge.Controllers
         private readonly ILogger<ProductController> _logger;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IProductService _productService;
+        private readonly IInventoryService _inventoryService;
 
-        public ProductController(ILogger<ProductController> logger, IWebHostEnvironment hostingEnvironment, IProductService productService)
+        public ProductController(ILogger<ProductController> logger, IWebHostEnvironment hostingEnvironment,
+            IProductService productService, IInventoryService inventoryService)
         {
             _logger = logger;
             _hostingEnvironment = hostingEnvironment;
             _productService = productService;
+            _inventoryService = inventoryService;
         }
 
         /// <summary>
@@ -36,13 +39,36 @@ namespace ShopBridge.Controllers
         [Route("GetAllProducts")]
         public async Task<IActionResult> GetAllProducts()
         {
+            string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
             var response = await _productService.GetAllProductsAsync();
 
             switch (response)
             {
                 case null:
-                    return StatusCode(500);
+                    return Ok(new List<ProductInventory>());
                 default:
+                    var inventories = await _inventoryService.GetAllInventoriesAsync();
+                    List<ProductInventory> inventoryList = new List<ProductInventory>();
+
+                    if (response != null && response.Count() > 0)
+                    {
+                        inventoryList = response.Join(
+                        inventories,
+                        product => product.ProductId,
+                        inventory => inventory.ProductId,
+                        (product, inventory) => new ProductInventory
+                        {
+                            ProductId = product.ProductId,
+                            ProductName = product.ProductName,
+                            ProductDescription = product.ProductDescription,
+                            ProductImage = string.IsNullOrEmpty(product.ProductImage) ? string.Empty : io.Path.Combine(path, product.ProductImage),
+                            IsActive = product.IsActive,
+                            InventoryId = inventory.ProductId,
+                            InventoryQuantity = inventory.InventoryQuantity
+
+                        }).ToList();
+                    }
+
                     return Ok(response.ToList());
             }
         }
@@ -56,6 +82,7 @@ namespace ShopBridge.Controllers
         [Route("GetProductById/{id}")]
         public async Task<IActionResult> GetProductById(long id)
         {
+            string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
             var response = await _productService.GetProductByIdAsync(id);
 
             switch (response)
@@ -63,6 +90,7 @@ namespace ShopBridge.Controllers
                 case null:
                     return StatusCode(500);
                 default:
+                    response.ProductImage = string.IsNullOrEmpty(response.ProductImage) ? string.Empty : io.Path.Combine(path, response.ProductImage);
                     return Ok(response);
             }
         }
@@ -75,7 +103,7 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("CreateProduct")]
-        public async Task<IActionResult> CreateProduct(Product product, IFormFile file)
+        public async Task<IActionResult> CreateProduct(Prod product, IFormFile file)
         {
             if (product == null || product.ProductId != 0)
                 return BadRequest();
@@ -116,9 +144,18 @@ namespace ShopBridge.Controllers
 
             switch (response)
             {
-                case false:
+                case null:
                     return StatusCode(500);
                 default:
+                    Inventory inventory = new Inventory
+                    {
+                        InventoryQuantity = product.InventoryQuantity,
+                        ProductId = response.ProductId,
+                        CreatedBy = 1,
+                        CreatedDate = DateTime.UtcNow
+                    };
+
+                    await _inventoryService.CreateInventory(inventory);
                     return Ok(response);
             }
         }
@@ -130,7 +167,7 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("UpdateProduct")]
-        public async Task<IActionResult> UpdateUser(Product product, IFormFile file)
+        public async Task<IActionResult> UpdateUser(Prod product, IFormFile file)
         {
             if (product == null || product.ProductId <= 0)
                 return BadRequest();
@@ -187,9 +224,26 @@ namespace ShopBridge.Controllers
 
             switch (response)
             {
-                case false:
+                case null:
                     return StatusCode(500);
                 default:
+
+                    var existingInventory = await _inventoryService.GetInventoryByProductIdAsync(product.ProductId);
+
+                    if (existingInventory == null)
+                    {
+                        Inventory inventory = new Inventory
+                        {
+                            InventoryQuantity = product.InventoryQuantity,
+                            ProductId = response.ProductId,
+                            CreatedBy = 1,
+                            CreatedDate = DateTime.UtcNow
+                        };
+
+                        await _inventoryService.CreateInventory(inventory);
+                    }
+
+
                     return Ok(response);
             }
         }
@@ -217,15 +271,9 @@ namespace ShopBridge.Controllers
             product.DeletedBy = 1;
             product.DeletedDate = DateTime.UtcNow;
 
-            var response = await _productService.UpdateProduct(product);
+            await _productService.UpdateProduct(product);
 
-            switch (response)
-            {
-                case false:
-                    return StatusCode(500);
-                default:
-                    return Ok(response);
-            }
+            return Ok();
         }
     }
 }

@@ -29,20 +29,25 @@ namespace ShopBridgeRepo.Implementation
         {
             return await _IInventoryRepository.GetInventoryByIdAsync(InventoryId);
         }
-        
-        public async Task<bool> CreateInventory(Inventory Inventory)
+
+        public async Task<Inventory> GetInventoryByProductIdAsync(long ProductId)
+        {
+            return await _IInventoryRepository.GetInventoryByProductIdAsync(ProductId);
+        }
+
+        public async Task<Inventory> CreateInventory(Inventory Inventory)
         {
             return await _IInventoryRepository.CreateInventory(Inventory);
         }
         
-        public async Task<bool> UpdateInventory(Inventory Inventory)
+        public async Task<Inventory> UpdateInventory(Inventory Inventory)
         {
             return await _IInventoryRepository.UpdateInventory(Inventory);
         }
         
-        public async Task<bool> DeleteInventory(Inventory Inventory)
+        public async void DeleteInventory(Inventory Inventory)
         {
-            return await _IInventoryRepository.DeleteInventory(Inventory);
+            _IInventoryRepository.DeleteInventory(Inventory);
         }
     }
 }

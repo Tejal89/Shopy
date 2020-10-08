@@ -27,18 +27,24 @@ namespace ShopBridgeRepo.Implementation
             return await FindByCondition(x => x.InventoryId.Equals(InventoryId))
                 .FirstOrDefaultAsync();
         }
-        
-        public async Task<bool> CreateInventory(Inventory Inventory)
+
+        public async Task<Inventory> GetInventoryByProductIdAsync(long ProductId)
+        {
+            return await FindByCondition(x => x.ProductId.Equals(ProductId))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Inventory> CreateInventory(Inventory Inventory)
         {
             return Create(Inventory);
         }
-        public async Task<bool> UpdateInventory(Inventory Inventory)
+        public async Task<Inventory> UpdateInventory(Inventory Inventory)
         {
             return Update(Inventory);
         }
-        public async Task<bool> DeleteInventory(Inventory Inventory)
+        public async void DeleteInventory(Inventory Inventory)
         {
-            return Delete(Inventory);
+            Delete(Inventory);
         }
     }
 }

@@ -30,19 +30,19 @@ namespace ShopBridgeRepo.Implementation
             return await _IProductRepository.GetProductByIdAsync(ProductId);
         }
 
-        public async Task<bool> CreateProduct(Product Product)
+        public async Task<Product> CreateProduct(Product Product)
         {
             return await _IProductRepository.CreateProduct(Product);
         }
 
-        public async Task<bool> UpdateProduct(Product Product)
+        public async Task<Product> UpdateProduct(Product Product)
         {
             return await _IProductRepository.UpdateProduct(Product);
         }
 
-        public async Task<bool> DeleteProduct(Product Product)
+        public async void DeleteProduct(Product Product)
         {
-            return await _IProductRepository.DeleteProduct(Product);
+            _IProductRepository.DeleteProduct(Product);
         }
     }
 }

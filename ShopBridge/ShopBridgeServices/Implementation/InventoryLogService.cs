@@ -30,17 +30,17 @@ namespace ShopBridgeRepo.Implementation
             return await _IInventoryLogRepository.GetInventoryLogByIdAsync(InventoryLogId);
         }
         
-        public async Task<bool> CreateInventoryLog(InventoryLog InventoryLog)
+        public async Task<InventoryLog> CreateInventoryLog(InventoryLog InventoryLog)
         {
             return await _IInventoryLogRepository.CreateInventoryLog(InventoryLog);
         }
-        public async Task<bool> UpdateInventoryLog(InventoryLog InventoryLog)
+        public async Task<InventoryLog> UpdateInventoryLog(InventoryLog InventoryLog)
         {
             return await _IInventoryLogRepository.UpdateInventoryLog(InventoryLog);
         }
-        public async Task<bool> DeleteInventoryLog(InventoryLog InventoryLog)
+        public async void DeleteInventoryLog(InventoryLog InventoryLog)
         {
-            return await _IInventoryLogRepository.DeleteInventoryLog(InventoryLog);
+            _IInventoryLogRepository.DeleteInventoryLog(InventoryLog);
         }
     }
 }

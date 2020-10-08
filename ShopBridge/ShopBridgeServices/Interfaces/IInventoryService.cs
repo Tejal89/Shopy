@@ -10,8 +10,9 @@ namespace ShopBridgeServices.Interfaces
     {
         Task<IEnumerable<Inventory>> GetAllInventoriesAsync();
         Task<Inventory> GetInventoryByIdAsync(long InventoryId);
-        Task<bool> CreateInventory(Inventory Inventory);
-        Task<bool> UpdateInventory(Inventory Inventory);
-        Task<bool> DeleteInventory(Inventory Inventory);
+        Task<Inventory> GetInventoryByProductIdAsync(long ProductId);
+        Task<Inventory> CreateInventory(Inventory Inventory);
+        Task<Inventory> UpdateInventory(Inventory Inventory);
+        void DeleteInventory(Inventory Inventory);
     }
 }

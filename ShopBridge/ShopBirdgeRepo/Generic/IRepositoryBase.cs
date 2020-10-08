@@ -10,8 +10,8 @@ namespace ShopBridgeRepo
     {
         IQueryable<T> FindAll();
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
-        bool Create(T entity);
-        bool Update(T entity);
-        bool Delete(T entity);
+        T Create(T entity);
+        T Update(T entity);
+        void Delete(T entity);
     }
 }

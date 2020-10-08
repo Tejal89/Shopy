@@ -30,17 +30,17 @@ namespace ShopBridgeRepo.Implementation
                 .FirstOrDefaultAsync();
         }
         
-        public async Task<bool> CreateUser(User User)
+        public async Task<User> CreateUser(User User)
         {
             return Create(User);
         }
-        public async Task<bool> UpdateUser(User User)
+        public async Task<User> UpdateUser(User User)
         {
             return Update(User);
         }
-        public async Task<bool> DeleteUser(User User)
+        public async void DeleteUser(User User)
         {
-            return Delete(User);
+            Delete(User);
         }
     }
 }

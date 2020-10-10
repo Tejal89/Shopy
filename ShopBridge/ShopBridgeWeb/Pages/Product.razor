@@ -1,0 +1,73 @@
+﻿@page "/product"
+
+@using p = ShopBridgeWeb.Data
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+
+<h1 class="text-center align-content-center">ShopBridge Products</h1>
+
+<p class="text-center align-content-center">
+    <a href="/manageproduct/0" class="btn btn-primary">Add Product</a>
+</p>
+
+@if (products == null)
+{
+    <p class="text-center align-content-center"><em>No Products Found</em></p>
+}
+else
+{
+<div class="row">
+    <div class="col-md-12">
+    <table class="table table-responsive align-content-center" style="width:100%">
+        <thead>
+            <tr>
+                <th class="text-center align-content-center" style="width:20%">Name</th>
+                <th class="text-center align-content-center" style="width:20%">Description</th>
+                <th class="text-center align-content-center" style="width:20%">Image</th>
+                <th class="text-center align-content-center" style="width:20%">Quantity</th>
+                <th class="text-center align-content-center" style="width:20%">Active?</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td class="text-center align-content-center" style="width:20%">@product.ProductName</td>
+                    <td class="text-center align-content-center" style="width:20%">@product.ProductDescription</td>
+                    @if (!string.IsNullOrEmpty(product.ProductImage))
+                    {
+                        <td class="text-center align-content-center" style="width:20%"><img class="img-thumbnail" src="@product.ProductImage" /></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td class="text-center align-content-center" style="width:20%">@product.InventoryQuantity</td>
+                    @if (product.IsActive.Value)
+                    {
+                        <td class="text-center align-content-center" style="width:20%">Yes</td>
+                    }
+                    else
+                    {
+                        <td class="text-center align-content-center" style="width:20%">No</td>
+                    }
+                    <td class="text-center align-content-center" style="width:20%"><a href="manageproduct/@product.ProductId" class="btn btn-primary">Edit</a></td>
+                    <td class="text-center align-content-center" style="width:20%"><a href="deleteProduct/@product.ProductId" class="btn btn-primary">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+}
+
+@code {
+    private List<p.Prod> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllProducts();
+    }
+}

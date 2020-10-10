@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShopBridgeData\ShopBridgeData.csproj" />
-    <ProjectReference Include="..\ShopBridigeEntity\ShopBridigeEntity.csproj" />
   </ItemGroup>
 
 </Project>

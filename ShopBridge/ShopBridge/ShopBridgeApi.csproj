@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShopBridgeServices\ShopBridgeServices.csproj" />
-    <ProjectReference Include="..\ShopBridigeEntity\ShopBridigeEntity.csproj" />
   </ItemGroup>
 
 

@@ -10,8 +10,8 @@ namespace ShopBridgeRepo.Interfaces
     {
         Task<IEnumerable<InventoryLog>> GetAllInventoryLogsAsync();
         Task<InventoryLog> GetInventoryLogByIdAsync(long InventoryLogId);
-        Task<InventoryLog> CreateInventoryLog(InventoryLog InventoryLog);
-        Task<InventoryLog> UpdateInventoryLog(InventoryLog InventoryLog);
-        void DeleteInventoryLog(InventoryLog InventoryLog);
+        Task<int> CreateInventoryLog(InventoryLog InventoryLog);
+        Task<int> UpdateInventoryLog(InventoryLog InventoryLog);
+        Task<int> DeleteInventoryLog(InventoryLog InventoryLog);
     }
 }

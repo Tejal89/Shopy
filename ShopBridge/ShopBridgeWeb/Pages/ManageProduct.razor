@@ -1,0 +1,103 @@
+﻿@page "/manageproduct/{id}"
+
+@using p = ShopBridgeWeb.Data
+@using System.IO
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+@if (lid == 0)
+{
+    <h2 class="form-group text-center justify-content-center">Add Product</h2>
+}
+else
+{
+    <h2 class="form-group text-center justify-content-center">Update Product</h2>
+}
+<hr />
+
+<form enctype="multipart/form-data" class="form-group text-center justify-content-center">
+    <input name="ProductId" type="hidden" @bind="@product.ProductId" />
+    <div class="row">
+        <div class="col-md-3">
+            <!--spacer-->
+        </div>
+        <div class="col-md-6 justify-content-center">
+            <div class="form-group">
+                <label for="ProductName" class="control-label">Name (Mandatory)</label>
+                <input type="text" for="ProductName" class="form-control" @bind="@product.ProductName" />
+            </div>
+            <div class="form-group">
+                <label for="ProductDescription" class="control-label">Decription</label>
+                <textarea rows="3" for="ProductDescription" class="form-control" @bind="@product.ProductDescription" />
+            </div>
+            <div class="form-group">
+                <label for="ProductImage" class="control-label">Image</label>
+                <input type="hidden" for="ProductImage" @bind="@product.ProductImage" id="hdnImageName" />
+                <input type="hidden" for="ProductImageBytes" @bind="product.ProductImageBytes" id="hdnImagePath" />
+                <input type="file" id="files" name="files" @onchange="(async(x)=>onFileChange(x))" />
+                <img id="filePreview" class="card-img" @onchange="(async(x)=>onImgSrcChange(x))" style="width:100px;height:100px;">
+            </div>
+            <div class="form-group">
+                <label for="IsActive" class="control-label">Active?</label>
+                <input type="checkbox" for="IsActive" @bind="@product.IsActive" />
+            </div>
+            <div class="form-group">
+                <label for="InventoryQuantity" class="control-label">Quantity</label>
+                <input type="number" for="InventoryQuantity" class="form-control" TValue="0" @bind="@product.InventoryQuantity" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <!--spacer-->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 justify-content-center">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@SaveProduct" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    string _ProductImage; //tyring image upload through these string variables
+    string _ProductImageBytes;
+
+    [Parameter]
+    public string id { get; set; }
+    long lid;
+    p.Prod product = new p.Prod();
+
+    protected override async Task OnInitializedAsync()
+    {
+        long.TryParse(id, out lid);
+        if (lid > 0)
+        {
+            product = await ProductService.GetProductById(lid);
+        }
+    }
+
+    protected async Task SaveProduct()
+    {
+        var result = await ProductService.ManageProduct(product, null);
+        NavigationManager.NavigateTo("product");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("product");
+    }
+
+    public async void onFileChange(ChangeEventArgs ev)
+    {
+        await JSRuntime.InvokeAsync<byte[]>("fileChange");
+    }
+
+    public async void onImgSrcChange(ChangeEventArgs ev)
+    {
+        await JSRuntime.InvokeAsync<byte[]>("imgSrcChange");
+    }
+
+} 

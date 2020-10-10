@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ShopBridge.Middlewares;
 using ShopBridgeData.Entity;
 using ShopBridgeServices;
 using ShopBridgeServices.Interfaces;
@@ -39,7 +40,7 @@ namespace ShopBridge.Controllers
         [Route("GetAllProducts")]
         public async Task<IActionResult> GetAllProducts()
         {
-            string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
+            string path = io.Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Uploads", "Products");
             var response = await _productService.GetAllProductsAsync();
 
             switch (response)
@@ -48,28 +49,28 @@ namespace ShopBridge.Controllers
                     return Ok(new List<ProductInventory>());
                 default:
                     var inventories = await _inventoryService.GetAllInventoriesAsync();
+                    var inventory = new Inventory();
                     List<ProductInventory> inventoryList = new List<ProductInventory>();
-
                     if (response != null && response.Count() > 0)
                     {
-                        inventoryList = response.Join(
-                        inventories,
-                        product => product.ProductId,
-                        inventory => inventory.ProductId,
-                        (product, inventory) => new ProductInventory
+                        foreach (Product product in response)
                         {
-                            ProductId = product.ProductId,
-                            ProductName = product.ProductName,
-                            ProductDescription = product.ProductDescription,
-                            ProductImage = string.IsNullOrEmpty(product.ProductImage) ? string.Empty : io.Path.Combine(path, product.ProductImage),
-                            IsActive = product.IsActive,
-                            InventoryId = inventory.ProductId,
-                            InventoryQuantity = inventory.InventoryQuantity
+                            inventory = inventories.FirstOrDefault(x => x.ProductId == product.ProductId);
+                            inventoryList.Add(new ProductInventory
+                            {
+                                ProductId = product.ProductId,
+                                ProductName = product.ProductName,
+                                ProductDescription = product.ProductDescription,
+                                ProductImage = string.IsNullOrEmpty(product.ProductImage) ? string.Empty : io.Path.Combine(path, product.ProductImage),
+                                IsActive = product.IsActive ?? false,
+                                InventoryId = inventory == null ? 0: inventory.InventoryId,
+                                InventoryQuantity = inventory == null ? 0 : inventory.InventoryQuantity
+                            });
 
-                        }).ToList();
+                        }
                     }
 
-                    return Ok(response.ToList());
+                    return Ok(inventoryList.ToList());
             }
         }
 
@@ -80,9 +81,9 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetProductById/{id}")]
-        public async Task<IActionResult> GetProductById(long id)
+        public async Task<IActionResult> GetProductById([FromRoute] long id)
         {
-            string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
+            string path = io.Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Uploads", "Products");
             var response = await _productService.GetProductByIdAsync(id);
 
             switch (response)
@@ -90,8 +91,19 @@ namespace ShopBridge.Controllers
                 case null:
                     return StatusCode(500);
                 default:
-                    response.ProductImage = string.IsNullOrEmpty(response.ProductImage) ? string.Empty : io.Path.Combine(path, response.ProductImage);
-                    return Ok(response);
+
+                    var inventory = await _inventoryService.GetInventoryByProductIdAsync(id);
+
+                    return Ok(new ProductInventory()
+                    {
+                        ProductId = response.ProductId,
+                        ProductName = response.ProductName,
+                        ProductDescription = response.ProductDescription,
+                        ProductImage = string.IsNullOrEmpty(response.ProductImage) ? string.Empty : io.Path.Combine(path, response.ProductImage),
+                        IsActive = response.IsActive ?? false,
+                        InventoryId = inventory == null ? 0 : inventory.InventoryId,
+                        InventoryQuantity = inventory == null ? 0 : inventory.InventoryQuantity
+                    });
             }
         }
 
@@ -103,7 +115,7 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("CreateProduct")]
-        public async Task<IActionResult> CreateProduct(Prod product, IFormFile file)
+        public async Task<IActionResult> CreateProduct([ModelBinder(BinderType = typeof(JsonModelBinder))] Prod product, IFormFile file)
         {
             if (product == null || product.ProductId != 0)
                 return BadRequest();
@@ -114,14 +126,12 @@ namespace ShopBridge.Controllers
                 return Conflict();
             }
 
-            if (file == null)
-            {
-                product.ProductImage = string.Empty;
-            }
+            //reset image if file is null
+            //product.ProductImage = file == null ? string.Empty : product.ProductImage;
 
             if (!string.IsNullOrEmpty(product.ProductImage))
             {
-                string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
+                string path = io.Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Uploads", "Products");
 
                 if (!io.Directory.Exists(path))
                 {
@@ -136,6 +146,7 @@ namespace ShopBridge.Controllers
                 io.File.Create(io.Path.Combine(path, product.ProductImage));
             }
 
+            product.IsActive = product.IsActive ?? false;
             product.IsDeleted = false;
             product.CreatedBy = 1;
             product.CreatedDate = DateTime.UtcNow;
@@ -144,13 +155,16 @@ namespace ShopBridge.Controllers
 
             switch (response)
             {
-                case null:
+                case 0:
                     return StatusCode(500);
                 default:
+
+                    products = await _productService.GetAllProductsAsync();
+                    product.ProductId = products.FirstOrDefault(x => x.ProductImage.ToLowerInvariant() == product.ProductImage.ToLowerInvariant()).ProductId;
                     Inventory inventory = new Inventory
                     {
                         InventoryQuantity = product.InventoryQuantity,
-                        ProductId = response.ProductId,
+                        ProductId = product.ProductId,
                         CreatedBy = 1,
                         CreatedDate = DateTime.UtcNow
                     };
@@ -167,7 +181,7 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("UpdateProduct")]
-        public async Task<IActionResult> UpdateUser(Prod product, IFormFile file)
+        public async Task<IActionResult> UpdateUser([ModelBinder(BinderType = typeof(JsonModelBinder))] Prod product, IFormFile file)
         {
             if (product == null || product.ProductId <= 0)
                 return BadRequest();
@@ -184,10 +198,10 @@ namespace ShopBridge.Controllers
             }
 
             //reset image if file is null
-            product.ProductImage = file == null ? string.Empty : product.ProductImage;
+            //product.ProductImage = file == null ? string.Empty : product.ProductImage;
 
             //delete old file if exists
-            string path = io.Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", "Products");
+            string path = io.Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Uploads", "Products");
             var oldImage = string.Empty;
             var oldProduct = products.FirstOrDefault(x => x.ProductId == product.ProductId);
             oldImage = oldProduct.ProductImage;
@@ -216,6 +230,7 @@ namespace ShopBridge.Controllers
                 io.File.Create(io.Path.Combine(path, product.ProductImage));
             }
 
+            product.IsActive = product.IsActive ?? false;
             product.IsDeleted = false;
             product.UpdatedBy = 1;
             product.UpdatedDate = DateTime.UtcNow;
@@ -224,7 +239,7 @@ namespace ShopBridge.Controllers
 
             switch (response)
             {
-                case null:
+                case 0:
                     return StatusCode(500);
                 default:
 
@@ -235,12 +250,17 @@ namespace ShopBridge.Controllers
                         Inventory inventory = new Inventory
                         {
                             InventoryQuantity = product.InventoryQuantity,
-                            ProductId = response.ProductId,
+                            ProductId = product.ProductId,
                             CreatedBy = 1,
                             CreatedDate = DateTime.UtcNow
                         };
 
                         await _inventoryService.CreateInventory(inventory);
+                    }
+                    else
+                    {
+                        existingInventory.InventoryQuantity = product.InventoryQuantity;
+                        await _inventoryService.UpdateInventory(existingInventory);
                     }
 
 
@@ -255,13 +275,13 @@ namespace ShopBridge.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("DeleteProduct/{id}")]
-        public async Task<IActionResult> DeleteProduct(long id)
+        public async Task<IActionResult> DeleteProduct([FromRoute] long id)
         {
             if (id <= 0)
                 return BadRequest();
 
             var products = await _productService.GetAllProductsAsync();
-            if (products != null || !products.ToList().Any(x => x.ProductId != id))
+            if (products != null && !products.ToList().Any(x => x.ProductId != id))
             {
                 return BadRequest();
             }

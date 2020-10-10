@@ -10,8 +10,8 @@ namespace ShopBridgeRepo.Interfaces
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(long UserId);
-        Task<User> CreateUser(User User);
-        Task<User> UpdateUser(User User);
-        void DeleteUser(User User);
+        Task<int> CreateUser(User User);
+        Task<int> UpdateUser(User User);
+        Task<int> DeleteUser(User User);
     }
 }

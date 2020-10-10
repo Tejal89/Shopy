@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShopBirdgeRepo\ShopBridgeRepo.csproj" />
-    <ProjectReference Include="..\ShopBridigeEntity\ShopBridigeEntity.csproj" />
   </ItemGroup>
 
 </Project>

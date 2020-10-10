@@ -1,0 +1,47 @@
+﻿@page "/deleteproduct/{id}"
+
+@using p = ShopBridgeWeb.Data
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+
+<h2 class="text-center justify-content-center">Delete</h2>
+<p class="text-center justify-content-center">Are you sure you want to delete this Product :<b> @product.ProductName</b>?</p>
+<br />
+
+<div class="form-group text-center justify-content-center" >
+    <input type="button" value="Delete" @onclick="@DeleteProductById" class="btn btn-primary" />
+    <input type="button" value="Cancel" @onclick="@Cancel" class="btn" />
+</div>
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+    long lid;
+    p.Prod product = new p.Prod();
+
+    protected override async Task OnInitializedAsync()
+    {
+        long.TryParse(id, out lid);
+        if (lid > 0)
+        {
+            product = await ProductService.GetProductById(lid);
+        }
+
+        if (lid <= 0 || product == null)
+        {
+            NavigationManager.NavigateTo("product");
+        }
+    }
+
+    protected async Task DeleteProductById()
+    {
+        var result = await ProductService.DeleteProduct(lid);
+        NavigationManager.NavigateTo("product");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("product");
+    }
+}

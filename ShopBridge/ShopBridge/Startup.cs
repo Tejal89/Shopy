@@ -34,9 +34,15 @@ namespace ShopBridge
                 options.UseSqlServer(Configuration.GetConnectionString("ShopBridgeDatabase")));
 
             services.AddTransient<IUserRepository, UserRepository>();
-            
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IInventoryRepository, InventoryRepository>();
+            services.AddTransient<IInventoryLogRepository, InventoryLogRepository>();
+
             services.AddTransient<IUserService, UserService>();
-            
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IInventoryService, InventoryService>();
+            services.AddTransient<IInventoryLogService, InventoryLogService>();
+
             services.AddControllers();
         }
 

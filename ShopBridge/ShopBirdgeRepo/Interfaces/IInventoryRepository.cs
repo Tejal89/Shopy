@@ -11,9 +11,9 @@ namespace ShopBridgeRepo.Interfaces
         Task<IEnumerable<Inventory>> GetAllInventoriesAsync();
         Task<Inventory> GetInventoryByIdAsync(long InventoryId);
         Task<Inventory> GetInventoryByProductIdAsync(long ProductId);
-        Task<Inventory> CreateInventory(Inventory Inventory);
+        Task<int> CreateInventory(Inventory Inventory);
 
-        Task<Inventory> UpdateInventory(Inventory Inventory);
-        void DeleteInventory(Inventory Inventory);
+        Task<int> UpdateInventory(Inventory Inventory);
+        Task<int> DeleteInventory(Inventory Inventory);
     }
 }

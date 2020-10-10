@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopBridgeApi", "ShopBridge
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopBridgeData", "ShopBridgeData\ShopBridgeData.csproj", "{20FACC03-F4DF-4FC9-80F3-EA98806F4496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopBridgeRepo", "ShopBirdgeRepo\ShopBridgeRepo.csproj", "{CDF7EA65-A046-4352-BFDE-65508D6BACFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopBridgeRepo", "ShopBirdgeRepo\ShopBridgeRepo.csproj", "{CDF7EA65-A046-4352-BFDE-65508D6BACFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopBridgeServices", "ShopBridgeServices\ShopBridgeServices.csproj", "{3900F7E8-DC7D-43AB-8076-C6B32BAAAC9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopBridgeServices", "ShopBridgeServices\ShopBridgeServices.csproj", "{3900F7E8-DC7D-43AB-8076-C6B32BAAAC9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopBridigeEntity", "ShopBridigeEntity\ShopBridigeEntity.csproj", "{76CF0068-A3DB-44CE-B37B-07A458B09334}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopBridgeWeb", "ShopBridgeWeb\ShopBridgeWeb.csproj", "{48F79A8D-6568-491B-ABE5-8369C02F0E41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{3900F7E8-DC7D-43AB-8076-C6B32BAAAC9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3900F7E8-DC7D-43AB-8076-C6B32BAAAC9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3900F7E8-DC7D-43AB-8076-C6B32BAAAC9C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76CF0068-A3DB-44CE-B37B-07A458B09334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76CF0068-A3DB-44CE-B37B-07A458B09334}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76CF0068-A3DB-44CE-B37B-07A458B09334}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76CF0068-A3DB-44CE-B37B-07A458B09334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48F79A8D-6568-491B-ABE5-8369C02F0E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48F79A8D-6568-491B-ABE5-8369C02F0E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48F79A8D-6568-491B-ABE5-8369C02F0E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48F79A8D-6568-491B-ABE5-8369C02F0E41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,19 +29,19 @@ namespace ShopBridgeRepo.Implementation
                 .FirstOrDefaultAsync();
         }
         
-        public async Task<InventoryLog> CreateInventoryLog(InventoryLog InventoryLog)
+        public async Task<int> CreateInventoryLog(InventoryLog InventoryLog)
         {
-            return Create(InventoryLog);
+            return await Create(InventoryLog);
         }
 
-        public async Task<InventoryLog> UpdateInventoryLog(InventoryLog InventoryLog)
+        public async Task<int> UpdateInventoryLog(InventoryLog InventoryLog)
         {
-            return Update(InventoryLog);
+            return await Update(InventoryLog);
         }
 
-        public async void DeleteInventoryLog(InventoryLog InventoryLog)
+        public async Task<int> DeleteInventoryLog(InventoryLog InventoryLog)
         {
-            Delete(InventoryLog);
+            return await Delete(InventoryLog);
         }
     }
 }
